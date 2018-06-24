@@ -25,20 +25,17 @@
                        (list (nat-operator) 'x (atom))
                        (list (nat-operator) (atom) 'x))))
 
-;(define rep-n (expression))
-;(define (rep-f) (mem (lambda () (expression))))
-;(define (rep) rep-n (rep-f))
-
-
+(define (create-repeat) (list 'repeat (expression) (list 'lambda '() (expression))))
+(define (create-range)  (list 'range (expression) (expression)))
 (define (f) (list 'lambda '(x) (expression)))
 
-(define list-expression (mh-query 100 10  
+(define list-expression (mh-query 100 10
   (define test-f (f))
   (define n (integer))
   (list test-f "over range 1 -" n)
-  (condition (equal? (map (eval test-f) (range 1 n)) '(2 4 6 8 10)))                                  
+  (condition (equal? (map (eval test-f) (range 1 n)) '(2 4 6 8 10)))
                               ))
-;(define (rep) 
+;(define (rep)
 ;  (define n (expression))
 ;  (define inner-f '(mem (lambda () (expression))))
 ;  (list 'repeat (expression) inner-f))
@@ -53,7 +50,7 @@
 ;;             list-f
 ;;             (condition (= (map (eval list-f) (range 1 2)) (list 1 1)))
 ;;             ))
-            
+
 
 ;(display (expression))a
 ;(hist test "Test")
@@ -65,4 +62,6 @@
 ;(map (eval (f)) (range 1 10))
 ;(eval (rep))
 ;(rep)
-(hist list-expression "Function expressions that produce (2 2)")
+;(hist list-expression "Function expressions that produce (2 2)")
+;(eval (rep))
+(create-range)
