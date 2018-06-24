@@ -1,13 +1,19 @@
-(define (atom)
-  (uniform-draw '("x" "1" "2" "3" "4")))
+(define (operator) (uniform-draw '(+ - * /)))
+(define (atom)     (uniform-draw '(1 2 3 4 5)))
+(define (expression) (uniform-draw
+                      (list
+                       (atom)
+                       (list (operator) (atom) (atom)))))
 
-(define (expression)
-  (uniform-draw 
-   (list (atom)
-      (string-append (atom) " + " (atom))
-      (string-append (atom) " - " (atom))
-      (string-append (atom) " * " (atom))
-      (string-append (atom) " / " (atom))
-      )))
+;(apply (eval (operator)) '(1 2))
 
-(expression)
+(define test
+  (mh-query 1000 10
+            (define expr (expression))
+            expr
+            (condition (= (eval expr) 3))
+            ))
+
+
+;(display (expression))
+(hist test "Test")
