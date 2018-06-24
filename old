@@ -1,0 +1,12 @@
+(define (operator) (uniform-draw '(+ -)))
+
+(apply (eval (operator)) '(1 2))
+
+(define test
+  (mh-query 100 100
+            (define op (operator))
+            op
+            (condition (= (apply (eval op) '(1 2)) 3))))
+
+;(hist test "Test")
+test
