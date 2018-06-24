@@ -1,4 +1,5 @@
 ; The python list expression AST for reference
+; vim: ft=scheme
 
 ;atom = Any('x', *map(str, range(0, _N))),
 ;expression = Any(Get('atom'),
@@ -79,13 +80,25 @@
         (append (list (first a)) (count-occurance b (rest a))))))
 
 (define (count-occurances local)
-  ;(console-log "HERE")
-  ;(console-log local)
-  ;(console-log "HEREB")
   (fold count-occurance '() local))
 
-;(count-occurances '(2 2 3 3))
-(count-occurances list-expression)
-;((first list-expression))
+(define (to-percents counts)
+  (map (lambda (x) (list (first x)
+                         (/ (second x) 
+                            (fold (lambda (a b) (+ b (second a))) 0 counts))))
+       counts))
 
-; vim: ft=scheme
+(define (log-bin bin)
+  (console-log (first bin))
+  (console-log (apply string-append
+                 (repeat (floor (* 80 (second bin)))
+                   (lambda () "#")))))
+
+(define (histogram query-list)
+  (for-each log-bin 
+            (to-percents (count-occurances query-list)))
+  "Histogram printed successfully")
+
+(histogram list-expression)
+;(to-percents (count-occurances list-expression))
+
