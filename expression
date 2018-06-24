@@ -64,4 +64,28 @@
 ;(rep)
 ;(hist list-expression "Function expressions that produce (2 2)")
 ;(eval (rep))
-(create-range)
+;(create-range)
+
+(define (count-occurance b a)
+  ;(console-log "Counting occurance of:")
+  ;(console-log b)
+  ;(console-log "Progress:")
+  ;(console-log a)
+  (if (= (length a) 0)
+      (list (list b 1))
+      (if (equal? (first (first a)) b)
+        (append (list (list b (+ 1 (second (first a)))))
+                (rest a))
+        (append (list (first a)) (count-occurance b (rest a))))))
+
+(define (count-occurances local)
+  ;(console-log "HERE")
+  ;(console-log local)
+  ;(console-log "HEREB")
+  (fold count-occurance '() local))
+
+;(count-occurances '(2 2 3 3))
+(count-occurances list-expression)
+;((first list-expression))
+
+; vim: ft=scheme
