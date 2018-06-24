@@ -1,5 +1,0 @@
-;(* (gaussian 0 1) (gaussian 0 1))
-
-(define two-gaussians (lambda () (* (gaussian 0 1) (gaussian 0 1) )))
-(density (repeat 100 two-gaussians))
-
