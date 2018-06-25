@@ -100,5 +100,6 @@
   "Histogram printed successfully")
 
 (histogram list-expression)
-;(to-percents (count-occurances list-expression))
+;(bootstrap (lambda (x) (eval x)) "test" 1)
 
+#include test.church
