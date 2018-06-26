@@ -30,8 +30,8 @@
   (condition (equal? (map (eval test-f) (range 1 n)) '(2 4 6 8 10)))
   ))
 
-;(histogram list-expression)
-(define x 2)
+(histogram list-expression)
+;(define x 2)
 ;(eval (concat))
 ;(eval (concat))
 ;(eval (create-repeat))
