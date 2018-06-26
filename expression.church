@@ -1,0 +1,39 @@
+; vim: ft=scheme
+#include histogram.church
+
+(define N 10)
+(define (random-range n) (range 1 (random-integer n)))
+(define (nat-operator) (uniform-draw '(+ - *))) ; No division: Produces fractional types from integers
+(define (integer)  (random-integer N))
+(define (atom) (if (flip) (integer) 'x))
+(define (expression) (uniform-draw
+                      (list
+                       (atom)
+                       (list (nat-operator) 'x (atom))
+                       (list (nat-operator) (atom) 'x))))
+
+(define (create-repeat) (list 'repeat (expression) (list 'lambda '() (expression))))
+(define (create-range)  (list 'range  (quote (unquote (expression))
+                                             (unquote (expression)))))
+(define (list-literal)   (list (map (lambda () (expression)) 
+                                    (random-range 5))))
+(define (list-type)     (uniform-draw (list (create-repeat) (create-range) (list-literal))))
+(define (concat)        (list 'flatten (map (lambda () (list-type)) 
+                                           (random-range 5))))
+(define (f) (list 'lambda '(x) (expression)))
+;(define (f) (list 'lambda '(x) (concat)))
+
+(define list-expression (mh-query 100 10
+  (define test-f (f))
+  (define n (integer))
+  (list test-f "over range 1 -" n)
+  (condition (equal? (map (eval test-f) (range 1 n)) '(2 4 6 8 10)))
+  ))
+
+;(histogram list-expression)
+(define x 2)
+;(eval (concat))
+;(eval (concat))
+;(eval (create-repeat))
+;(eval (create-range))
+;(quote (1 (unquote (+ 2 2))))

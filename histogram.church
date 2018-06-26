@@ -1,0 +1,33 @@
+; vim: ft=scheme
+
+(define (count-occurance b a)
+  ;(console-log "Counting occurance of:")
+  ;(console-log b)
+  ;(console-log "Progress:")
+  ;(console-log a)
+  (if (= (length a) 0)
+      (list (list b 1))
+      (if (equal? (first (first a)) b)
+        (append (list (list b (+ 1 (second (first a)))))
+                (rest a))
+        (append (list (first a)) (count-occurance b (rest a))))))
+
+(define (count-occurances local)
+  (fold count-occurance '() local))
+
+(define (to-percents counts)
+  (map (lambda (x) (list (first x)
+                         (/ (second x) 
+                            (fold (lambda (a b) (+ b (second a))) 0 counts))))
+       counts))
+
+(define (log-bin bin)
+  (console-log (first bin))
+  (console-log (apply string-append
+                 (repeat (floor (* 80 (second bin)))
+                   (lambda () "#")))))
+
+(define (histogram query-list)
+  (for-each log-bin 
+            (to-percents (count-occurances query-list)))
+  "Histogram printed successfully")
