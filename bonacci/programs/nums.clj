@@ -42,41 +42,53 @@
     (sample (integer)) 
     'x))
 
-;(defm expression []
-  ;(uniform-draw [()]))
+(defm expression []
+  (uniform-draw [(list-atom) (list (nat-operator) (list-atom) (list-atom))]))
 
 (defm list-function []
   ;(fn [x] (list-atom)))
   `(fn [~(symbol 'x)] ~(list-atom)))
+  ;`(fn [~(symbol 'x)] ~(expression)))
 
 (defm test-function [f x]
-  (eval `(~(eval f) 4)))
+  (eval `(~(eval f) ~x)))
 
 (defquery nums
-  (let [a  (sample (integer))
-        b  (sample (integer))
-        op (sample (nat-operator))
-        n  (sample (uniform-discrete 1 N))
+  (let [;a  (sample (integer))
+        ;b  (sample (integer))
+        ;op (sample (nat-operator))
+        ;n  (sample (uniform-discrete 1 N))
         t  (list-function)
-        l  (map #(test-function t %) (range n))]
+        e (expression)
+        ;l  (map #(test-function t %) (range n))
+        ;ld (map #(test-function (list-function) %) (range n))
+        ]
 
-    (println l)
+    (println expression)
+    ;(println l)
     ;(println ((eval t) 3))
-    (loop [elements l
-           known-list (list 2 2 2 2)]
-      (if (or (empty? elements)
-              (empty? known-list))
-        nil
-        (let [elem (first elements)
-              known (first known-list)]
-          (do
-            (observe-eq elem known)
-            (recur (rest elements) (rest known-list))
-            ))))
+    ;(observe ld (list 2 2 2 2))
+    ;(loop [elements l
+    ;       known-list (list 2 2 2 2)]
+    ;  (if (or (empty? elements)
+    ;          (empty? known-list))
+    ;    nil
+    ;    (let [elem (first elements)
+    ;          known (first known-list)]
+    ;      (do
+    ;        (observe-eq elem known)
+    ;        (recur (rest elements) (rest known-list))
+    ;        ))))
     ;(observe-eq l (list 2 2 2 2))
     ;(observe-eq (apply op (list a b)) 7)
     ;(observe-eq (apply (eval t) (list 2)) 2)
     ;(predict [a b op])))
-    (predict [t])
+    (observe-eq (test-function t 1) 4)
+    (observe-eq (test-function t 2) 4)
+    ;(observe-eq (test-function t 3) 9)
+    ;(observe-eq (test-function t 4) 16)
+    (predict t)
+    ;(observe)
+    ;(predict t)
     ))
 
