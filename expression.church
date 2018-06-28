@@ -2,8 +2,8 @@
 #include histogram.church
 
 (define N 10)
-(define (random-range n) (range 1 (random-integer n)))
 (define (nat-operator) (uniform-draw '(+ - *))) ; No division: Produces fractional types from integers
+;(define (pos-operator) (uniform-draw '(+ *)))
 (define (integer)  (random-integer N))
 (define (atom) (if (flip) (integer) 'x))
 (define (expression) (uniform-draw
@@ -11,17 +11,28 @@
                        (atom)
                        (list (nat-operator) 'x (atom))
                        (list (nat-operator) (atom) 'x))))
+;(define (pos-expression) (uniform-draw
+;                      (list
+;                       (atom)
+;                       (list (pos-operator) 'x (atom))
+;                       (list (pos-operator) (atom) 'x))))
 
 (define (create-repeat) (list 'repeat (expression) (list 'lambda '() (expression))))
-(define (create-range)  (list 'range  (quote (unquote (expression))
-                                             (unquote (expression)))))
-(define (list-literal)   (list (map (lambda () (expression)) 
-                                    (random-range 5))))
+(define (custom-range a b) 
+  (if (> a b)
+      (reverse (range b a))
+      (range a b)))
+(define (random-range n) (custom-range 1 (random-integer n)))
+
+(define (create-range)  (list 'custom-range  (expression) (expression)))
+(define (list-literal)  (append '(list) (map (lambda () (expression)) 
+                                             (random-range 5))))
 (define (list-type)     (uniform-draw (list (create-repeat) (create-range) (list-literal))))
-(define (concat)        (list 'flatten (map (lambda () (list-type)) 
-                                           (random-range 5))))
+(define (concat)        (list 'flatten (append '(list)
+                                               (map (lambda () (list-type)) 
+                                                (random-range 5)))))
 (define (f) (list 'lambda '(x) (expression)))
-;(define (f) (list 'lambda '(x) (concat)))
+(define (alt-f) (list 'lambda '(x) (concat)))
 
 (define list-expression (mh-query 100 10
   (define test-f (f))
@@ -31,8 +42,18 @@
   ))
 
 (histogram list-expression)
-;(define x 2)
+;(concat)
 ;(eval (concat))
+;(alt-f)
+;((eval (alt-f)) 2)
+(define func (alt-f))
+(console-log "HERE")
+(console-log func)
+(console-log (eval func))
+(console-log (apply (eval func) (list 2)))
+
+
+;(define x 2)
 ;(eval (concat))
 ;(eval (create-repeat))
 ;(eval (create-range))
