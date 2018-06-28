@@ -2,8 +2,9 @@
 #include histogram.church
 
 (define N 10)
-(define (nat-operator) (uniform-draw '(+ - *))) ; No division: Produces fractional types from integers
+;(define (nat-operator) (uniform-draw '(+ - *))) ; No division: Produces fractional types from integers
 ;(define (pos-operator) (uniform-draw '(+ *)))
+(define (nat-operator) (uniform-draw '(+ *)))
 (define (integer)  (random-integer N))
 (define (atom) (if (flip) (integer) 'x))
 (define (expression) (uniform-draw
@@ -17,13 +18,17 @@
 ;                       (list (pos-operator) 'x (atom))
 ;                       (list (pos-operator) (atom) 'x))))
 
-(define (create-repeat) (list 'repeat (expression) (list 'lambda '() (expression))))
 (define (custom-range a b) 
+  ;(console-log "comparing:")
+  ;(console-log a)
+  ;(console-log b)
   (if (> a b)
       (reverse (range b a))
       (range a b)))
-(define (random-range n) (custom-range 1 (random-integer n)))
+(define (random-range n) 
+  (custom-range 1 (random-integer n)))
 
+(define (create-repeat) (list 'repeat (expression) (list 'lambda '() (expression))))
 (define (create-range)  (list 'custom-range  (expression) (expression)))
 (define (list-literal)  (append '(list) (map (lambda () (expression)) 
                                              (random-range 5))))
@@ -31,27 +36,32 @@
 (define (concat)        (list 'flatten (append '(list)
                                                (map (lambda () (list-type)) 
                                                 (random-range 5)))))
+
+(define (high-level-type) (uniform-draw (list (concat) (list-type) (expression))))
+(define (f) (list 'lambda '(x) (high-level-type)))
 (define (f) (list 'lambda '(x) (expression)))
-(define (alt-f) (list 'lambda '(x) (concat)))
 
 (define list-expression (mh-query 100 10
   (define test-f (f))
   (define n (integer))
+  ;(console-log test-f)
   (list test-f "over range 1 -" n)
-  (condition (equal? (map (eval test-f) (range 1 n)) '(2 4 6 8 10)))
+  (condition (equal? (map (eval test-f) '(1 2)) '(2 4)))
   ))
 
+;(console-log (map (eval (f)) '(1 2)))
+;list-expression
 (histogram list-expression)
 ;(concat)
 ;(eval (concat))
 ;(alt-f)
 ;((eval (alt-f)) 2)
-(define func (alt-f))
-(console-log "HERE")
-(console-log func)
-(console-log (eval func))
-(console-log (apply (eval func) (list 2)))
-
+;(define func (alt-f))
+;(console-log "HERE")
+;(console-log func)
+;(console-log (eval func))
+;(console-log (apply (eval func) (list 2)))
+;
 
 ;(define x 2)
 ;(eval (concat))
