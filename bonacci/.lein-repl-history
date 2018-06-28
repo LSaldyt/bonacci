@@ -1,0 +1,25 @@
+(println +)
+(+ 2 3)
+(let [a '(+)]
+    (apply (eval (first a)) 2 2))
+(let [a '(+)]
+    (apply (eval (first a)) '(2 2)))
+quit
+(clojure.repl/demunge '+)
+(clojure.repl/demunge +)
+(clojure.repl/demunge (str +))
+(clojure.repl/demunge (str '+))
+(clojure.repl/demunge (str +))
+(-> #'+ meta :name)
+quit()
+(fn [x] 1)
+(apply (fn [x] 1) 2)
+(apply (fn [x] 1) [2])
+(apply (eval '(fn [x] 1)) [2])
+quit()
+((eval '(fn [x] 2)) 1)
+((eval '(clojure.core/fn [x] 2)) 1)
+((eval ~(clojure.core/fn [x] 2)) 1)
+((eval `(clojure.core/fn [x] 2)) 1)
+((eval `(clojure.core/fn [~(symbol 'x)] 2)) 1)
+quit
