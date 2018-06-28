@@ -19,8 +19,14 @@
                            (list (nat-operator) (atom) (inner-expression (- depth 1)))))
 (define (expression) (inner-expression 5))
 
-;(define (condition) (uniform-draw (list even? odd?)))
-;(define (conditional-expression) nil)
+(define (even? n) (= (modulo n 2) 0))
+(define (odd? n) (not (even? n)))
+(define (condition-op) (uniform-draw '(even? odd?)))
+(define (conditional-expression) (list (condition-op) (expression)))
+(define (conditional-body) (list 'if (conditional-expression)
+                                       (expression)
+                                       (expression)
+                                       ))
 
 ;(define (test)
 ;  (multinomial (list (+ 1 (test)) 0) (list (/ 1 2) (/ 1 2))))
@@ -52,14 +58,15 @@
 
 ;(define (high-level-type) (uniform-draw (list (concat))));(concat) (list-type))))
 ;(define (high-level-type) (uniform-draw (list (concat) (list-type) (expression))));(concat) (list-type))))
-(define (high-level-type) (uniform-draw (list (expression))));(concat) (list-type))))
+(define (high-level-type) (uniform-draw (list (expression) (conditional-body))));(concat) (list-type))))
 ;(define (high-level-type) (uniform-draw (list (list-type concat))));(concat) (list-type))))
 (define (f) (list 'lambda '(x) (high-level-type)))
 ;(define (f) (list 'lambda '(x) (expression)))
 ;(define (f) (list 'lambda '(x) (create-repeat)))
 ;(define (f) (list 'lambda '(x) (list-literal)))
+;(define (alt-f) (list 'lambda '(x) (conditional-body)))
 
-;(define t (f))
+;(define t (alt-f))
 ;(console-log t)
 ;(flatten (map (eval t) (custom-range 1 N)))
 
@@ -71,11 +78,10 @@
   ;(console-log over)
   ;(console-log (flatten (map func over)))
   (define created (flatten (map func over)))
-  (define l (list 3 5 7 9))
+  (define l (list 0 1 0 1 0))
   (list test-f "over range 0 -" n)
   (condition (and
                (equal? created l)
                ))
   ))
 (histogram list-expression)
-;(expression)
