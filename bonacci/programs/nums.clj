@@ -43,15 +43,16 @@
     'x))
 
 (defm expression []
-  (uniform-draw [(list-atom) (list (nat-operator) (list-atom) (list-atom))]))
+  (uniform-draw [(list-atom) (list (sample (nat-operator)) (list-atom) (list-atom))]))
 
 (defm list-function []
   ;(fn [x] (list-atom)))
-  `(fn [~(symbol 'x)] ~(list-atom)))
-  ;`(fn [~(symbol 'x)] ~(expression)))
+  ;`(fn [~(symbol 'x)] ~(list-atom)))
+  `(fn [~(symbol 'x)] ~(sample (expression))))
 
 (defm test-function [f x]
-  (eval `(~(eval f) ~x)))
+  ((eval f) x))
+  ;(eval `(~(eval f) ~x)))
 
 (defquery nums
   (let [;a  (sample (integer))
@@ -59,12 +60,16 @@
         ;op (sample (nat-operator))
         ;n  (sample (uniform-discrete 1 N))
         t  (list-function)
-        e (expression)
+        ;e  (sample (expression))
         ;l  (map #(test-function t %) (range n))
         ;ld (map #(test-function (list-function) %) (range n))
         ]
-
-    (println expression)
+    (println t)
+    (println (eval t))
+    (println ((eval t) 2))
+    (println (test-function t 2))
+    ;(println (eval `(~(eval t) ~2)))
+    ;(println e)
     ;(println l)
     ;(println ((eval t) 3))
     ;(observe ld (list 2 2 2 2))
@@ -83,8 +88,8 @@
     ;(observe-eq (apply op (list a b)) 7)
     ;(observe-eq (apply (eval t) (list 2)) 2)
     ;(predict [a b op])))
-    (observe-eq (test-function t 1) 4)
-    (observe-eq (test-function t 2) 4)
+    ;(observe-eq (test-function t 1) 4)
+    ;(observe-eq (test-function t 2) 4)
     ;(observe-eq (test-function t 3) 9)
     ;(observe-eq (test-function t 4) 16)
     (predict t)
