@@ -1,0 +1,39 @@
+; vim: ft=scheme
+#include pcfg.church
+
+(define (transition nonterminal)
+  (case nonterminal
+        (('atom) (from (list (terminal 'x)
+                             (terminal '1)
+                             (terminal '2))))
+        (('operator) (from (list (terminal '+)
+                                 (terminal '*))))
+        (('expression) (from (list '(atom)
+                                   '(operator expression expression))))
+        (('predicate) (from (list (terminal 'even)
+                                  (terminal 'odd))))
+        (('predicate-expr) (from (list '((predicate expression)))))
+        (('conditional) (from (list (list (terminal- 'if) 
+                                          'predicate
+                                          'expression
+                                          'expression))))
+        (('repeat) (from (list (list
+                                 (terminal- 'repeat)
+                                 'expression
+                                 'expression))))
+        (('range) (from (list (list
+                                 (terminal- 'range)
+                                 'expression
+                                 'expression))))
+        (('list-literal) (from (list (list
+                                       (terminal- 'list)
+                                       'expression)
+                                     (list
+                                       (terminal- 'append)
+                                       'list-literal
+                                       'list-literal))))
+        (('list-type) (from (list '(list-literal range repeat))))
+        (else 'error)
+        ))
+
+(tree-unfold transition 'list-type)

@@ -1,41 +1,26 @@
 ; vim: ft=scheme
-(define (terminal t) (list 'terminal t))
+(define (terminal t) (list (list 'terminal t)))
+(define (terminal- t) (list 'terminal t))
 
 (define (unwrap-terminal t) (second t))
 
+(define (inner-tree-unfold transition start-symbol depth)
+  (if (= depth 0)
+      'MAX-RECURSION-EXCEEDED-HERE
+      (if (terminal? start-symbol)
+          (unwrap-terminal start-symbol)   
+          (pair start-symbol 
+                (map (lambda (symbol) (inner-tree-unfold transition symbol (- depth 1))) (transition start-symbol))))))
+
+(define MAX-DEPTH 100)
+
 (define (tree-unfold transition start-symbol)
-  (if (terminal? start-symbol)
-      (unwrap-terminal start-symbol)   
-      (pair start-symbol 
-            (map (lambda (symbol) (tree-unfold  transition symbol)) (transition start-symbol)))))
+  (inner-tree-unfold transition start-symbol MAX-DEPTH))
 
 (define (terminal? symbol)
   (if (list? symbol)
       (equal? (first symbol) 'terminal)
       false))
 
-(define (termlist x)
-  (list (terminal x)))
-
-(define (equinomial l)
+(define (from l)
   (multinomial l (make-list (length l) (/ 1 (length l)))))
-
-(define (transition nonterminal)
-  (case nonterminal
-        (('D)  (equinomial (list (termlist 'the) 
-                                 (termlist 'a))))
-        (('N)  (equinomial (list (termlist 'chef)
-                                 (termlist 'soup)
-                                 (termlist 'omelet))))
-        (('V)  (equinomial (list (termlist 'cooks) 
-                                 (termlist 'works))))
-        (('A)  (equinomial (list (termlist 'diligently))))
-        (('AP) (equinomial (list '(A))))
-        (('NP) (equinomial (list '(D N))))
-        (('VP) (equinomial (list '(V AP) 
-                                 '(V NP))))
-        (('S)  (equinomial (list '(NP VP))))
-        (else 'error)))
-
-
-(tree-unfold transition 'S)

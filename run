@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys, os, subprocess
+import time
 
 from pprint import pprint
 
@@ -16,13 +17,16 @@ def main(args):
     assert len(args) > 0, 'Pre-processor requires at least one argument'
     filename = args[0]
     os.makedirs(cacheDir, exist_ok=True)
+    start = time.time()
     process(filename)
     ppFilename = get_pp_filename(filename)
+    end = time.time()
+    print('Time to process: {}ms'.format(round(1000 * (end - start))))
     x = subprocess.call(['church', '--timed', ppFilename])
-    #if x != 0:
-    #    with open(ppFilename, 'r') as infile:
-    #        for i, line in enumerate(infile):
-    #            print('{:<5} {}'.format(i, line))
+    if x != 0 and '--debug' in args:
+        with open(ppFilename, 'r') as infile:
+            for i, line in enumerate(infile):
+                print('{:<5} {}'.format(i, line), end='')
 
 def process(filename, seen=None):
     if seen is None:

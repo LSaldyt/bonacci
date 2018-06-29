@@ -1,0 +1,22 @@
+; vim: ft=scheme
+#include pcfg.church
+
+(define (transition nonterminal)
+  (case nonterminal
+        (('D)  (from (list (terminal 'the) 
+                           (terminal 'a))))
+        (('N)  (from (list (terminal 'chef)
+                           (terminal 'soup)
+                           (terminal 'omelet))))
+        (('V)  (from (list (terminal 'cooks) 
+                           (terminal 'works))))
+        (('A)  (from (list (terminal 'diligently))))
+        (('AP) (from (list '(A))))
+        (('NP) (from (list '(D N))))
+        (('VP) (from (list '(V AP) 
+                           '(V NP))))
+        (('S)  (from (list '(NP VP))))
+        (else 'error)))
+
+
+(tree-unfold transition 'S)
