@@ -12,7 +12,7 @@
           (pair start-symbol 
                 (map (lambda (symbol) (inner-tree-unfold transition symbol (- depth 1))) (transition start-symbol))))))
 
-(define MAX-DEPTH 100)
+(define MAX-DEPTH 10)
 
 (define (tree-unfold transition start-symbol)
   (inner-tree-unfold transition start-symbol MAX-DEPTH))
@@ -23,4 +23,4 @@
       false))
 
 (define (from l)
-  (multinomial l (make-list (length l) (/ 1 (length l)))))
+  (multinomial l (map (lambda (s) (/ 1 (length l))) l)))

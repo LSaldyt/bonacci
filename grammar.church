@@ -38,9 +38,10 @@
         (('predicate-expr) (from (list '((predicate expression)))))
         (('conditional) (from (list (list (terminal- 'if) 
                                           'predicate
-                                          'concat
-                                          'concat))))
+                                          'high-level
+                                          'high-level))))
+        (('high-level) (from (list '(conditional concat))))
         (else 'error)
         ))
 
-(tree-unfold transition 'conditional)
+(tree-unfold transition 'high-level)
