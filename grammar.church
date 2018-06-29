@@ -10,13 +10,6 @@
                                  (terminal '*))))
         (('expression) (from (list '(atom)
                                    '(operator expression expression))))
-        (('predicate) (from (list (terminal 'even)
-                                  (terminal 'odd))))
-        (('predicate-expr) (from (list '((predicate expression)))))
-        (('conditional) (from (list (list (terminal- 'if) 
-                                          'predicate
-                                          'expression
-                                          'expression))))
         (('repeat) (from (list (list
                                  (terminal- 'repeat)
                                  'expression
@@ -33,7 +26,21 @@
                                        'list-literal
                                        'list-literal))))
         (('list-type) (from (list '(list-literal range repeat))))
+        (('concat) (from (list (list
+                                 (terminal- 'append)
+                                 'list-type)
+                             (list
+                               (terminal- 'append)
+                               'list-type
+                               'concat))))
+        (('predicate) (from (list (terminal 'even)
+                                  (terminal 'odd))))
+        (('predicate-expr) (from (list '((predicate expression)))))
+        (('conditional) (from (list (list (terminal- 'if) 
+                                          'predicate
+                                          'concat
+                                          'concat))))
         (else 'error)
         ))
 
-(tree-unfold transition 'list-type)
+(tree-unfold transition 'conditional)
