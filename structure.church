@@ -1,0 +1,22 @@
+; vim: ft=scheme
+(define (all-but-last xs)
+  (cond ((null? xs) (error "all-but-last got empty list!"))
+        ((null? (rest xs)) '())
+        (else (pair (first xs) (all-but-last (rest xs))))))
+
+(define (all xs)
+  (if (null? xs)
+      #t
+      (and (first xs)
+           (all (rest xs)))))
+
+(define (noisy-equal? a b)
+  (flip (if (equal? a b) 1.0 0.2)))
+
+(define samples
+  (mh-query 30 1
+            (define bits (repeat 10 (lambda () (if (flip) 1 0))))
+            bits
+            (all (map noisy-equal? (rest bits) (all-but-last bits)))))
+
+(apply display samples)

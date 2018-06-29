@@ -44,4 +44,4 @@
         (else 'error)
         ))
 
-(tree-unfold transition 'high-level)
+(tree-unfold transition 'conditional)
