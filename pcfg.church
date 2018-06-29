@@ -1,0 +1,41 @@
+; vim: ft=scheme
+(define (terminal t) (list 'terminal t))
+
+(define (unwrap-terminal t) (second t))
+
+(define (tree-unfold transition start-symbol)
+  (if (terminal? start-symbol)
+      (unwrap-terminal start-symbol)   
+      (pair start-symbol 
+            (map (lambda (symbol) (tree-unfold  transition symbol)) (transition start-symbol)))))
+
+(define (terminal? symbol)
+  (if (list? symbol)
+      (equal? (first symbol) 'terminal)
+      false))
+
+(define (termlist x)
+  (list (terminal x)))
+
+(define (equinomial l)
+  (multinomial l (make-list (length l) (/ 1 (length l)))))
+
+(define (transition nonterminal)
+  (case nonterminal
+        (('D)  (equinomial (list (termlist 'the) 
+                                 (termlist 'a))))
+        (('N)  (equinomial (list (termlist 'chef)
+                                 (termlist 'soup)
+                                 (termlist 'omelet))))
+        (('V)  (equinomial (list (termlist 'cooks) 
+                                 (termlist 'works))))
+        (('A)  (equinomial (list (termlist 'diligently))))
+        (('AP) (equinomial (list '(A))))
+        (('NP) (equinomial (list '(D N))))
+        (('VP) (equinomial (list '(V AP) 
+                                 '(V NP))))
+        (('S)  (equinomial (list '(NP VP))))
+        (else 'error)))
+
+
+(tree-unfold transition 'S)
