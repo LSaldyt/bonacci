@@ -3,75 +3,45 @@
 
 (define (transition nonterminal depth)
   (case nonterminal
-        ;(('atom) (multinomial (list (terminal 'x) (terminal '1))
-        ;                      (list ())))
-        (('atom) (from depth (list (terminal 'x)
-                             (terminal '1)
-                             (terminal '2))
-                       '()
-                       ))
-        (('operator) (from depth (list (terminal '+)
-                                 (terminal '*))
-                           '()
-                           ))
+        (('atom)      (terms '(x 1 2)))
+        (('operator)  (terms '(+ *)))
+        (('predicate) (terms '(odd even)))
         (('expression) (multinomial (list '(atom)
-                                   '(operator expression expression))
-                                    (list 1 0)))
-        (('repeat) (from depth (list (list
-                                 (terminal- 'repeat)
-                                 'expression
-                                 'expression))
-                        '()
-                         ))
-        (('range) (from depth (list (list
-                                 (terminal- 'range)
-                                 'expression
-                                 'expression))
-                        '()
-                        ))
-        (('list-literal) (multinomial (list 
-                                        (list
-                                           (terminal- 'list)
-                                           'expression)
-                                        (list
-                                           (terminal- 'append)
-                                           'list-literal
-                                           'list-literal))
-                                      (list (/ 1 1) 0)))
-        (('list-literal) (multinomial (list 
-                                        (list
-                                           (terminal- 'list)
-                                           'expression))
-                                        (list
-                                          (terminal- 'append)
-                                          'list-literal
-                                          'list-literal)
-                                      (list (/ 3 4) (/ 0 4))))
-        (('list-type) (from depth (list '(list-literal range repeat))
-                            '()
-                            ))
-        (('concat) (multinomial (list (list
-                                 (terminal- 'append)
-                                 'list-type)
-                                (list
-                                  (terminal- 'append)
-                                  'list-type
-                                  'concat))
-                                (list (/ 3 4) (/ 0 4))))
-        (('predicate) (from depth (list (terminal 'even)
-                                  (terminal 'odd))
-                            '()
-                            ))
+                                          '(operator expression expression))
+                                    (list (/ 3 4) (/ depth 4))))
+        (('repeat) (just (list (terminal- 'repeat)
+                                'expression
+                                'expression)))
+        (('range) (just (list (terminal- 'range)
+                              'expression
+                              'expression)))
+        (('list-literal) (multinomial (list (list (terminal- 'list)
+                                                  'expression)
+                                            (list
+                                                  (terminal- 'append)
+                                                  'list-literal
+                                                  'list-literal))
+                                      (list (/ 3 4) (/ depth 4))))
+        (('list-literal) (multinomial (list (list (terminal- 'list)
+                                                  'expression))
+                                            (list (terminal- 'append)
+                                                  'list-literal
+                                                  'list-literal)
+                                      (list (/ 3 4) (/ depth 4))))
+        (('list-type) (just '(list-literal range repeat)))
+        (('concat) (multinomial (list (list (terminal- 'append)
+                                            'list-type)
+                                      (list (terminal- 'append)
+                                            'list-type
+                                            'concat))
+                                (list (/ 3 4) (/ depth 4))))
         (('predicate-expr) (from depth (list '((predicate expression)))))
-        (('conditional) (from depth (list (list (terminal- 'if) 
-                                          'predicate
-                                          'high-level
-                                          'high-level))
-                              '()
-                              ))
+        (('conditional) (just (list (terminal- 'if) 
+                                     'predicate
+                                     'high-level
+                                     'high-level)))
         (('high-level) (multinomial (list '(concat) '(conditional))
-                                    (list (/ 1 1)    0)))
-        (else 'error)
-        ))
+                                    (list (/ 3 4)    (/ depth 4))))
+        (else 'error)))
 
-(tree-unfold transition 'conditional)
+(tree-unfold transition 'conditional 10)
