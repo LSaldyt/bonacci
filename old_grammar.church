@@ -3,8 +3,6 @@
 
 (define (transition nonterminal depth)
   (case nonterminal
-        ;(('atom) (multinomial (list (terminal 'x) (terminal '1))
-        ;                      (list ())))
         (('atom) (from depth (list (terminal 'x)
                              (terminal '1)
                              (terminal '2))
@@ -14,9 +12,8 @@
                                  (terminal '*))
                            '()
                            ))
-        (('expression) (multinomial (list '(atom)
-                                   '(operator expression expression))
-                                    (list 1 0)))
+        (('expression) (from depth (list '(atom))
+                                   '((operator expression expression))))
         (('repeat) (from depth (list (list
                                  (terminal- 'repeat)
                                  'expression
@@ -29,35 +26,23 @@
                                  'expression))
                         '()
                         ))
-        (('list-literal) (multinomial (list 
-                                        (list
-                                           (terminal- 'list)
-                                           'expression)
-                                        (list
-                                           (terminal- 'append)
-                                           'list-literal
-                                           'list-literal))
-                                      (list (/ 1 1) 0)))
-        (('list-literal) (multinomial (list 
-                                        (list
-                                           (terminal- 'list)
-                                           'expression))
-                                        (list
-                                          (terminal- 'append)
-                                          'list-literal
-                                          'list-literal)
-                                      (list (/ 3 4) (/ 0 4))))
+        (('list-literal) (from depth (list (list
+                                       (terminal- 'list)
+                                       'expression))
+                                     (list (list
+                                       (terminal- 'append)
+                                       'list-literal
+                                       'list-literal))))
         (('list-type) (from depth (list '(list-literal range repeat))
                             '()
                             ))
-        (('concat) (multinomial (list (list
+        (('concat) (from depth (list (list
                                  (terminal- 'append)
-                                 'list-type)
-                                (list
-                                  (terminal- 'append)
-                                  'list-type
-                                  'concat))
-                                (list (/ 3 4) (/ 0 4))))
+                                 'list-type))
+                               (list (list
+                                 (terminal- 'append)
+                                 'list-type
+                                 'concat))))
         (('predicate) (from depth (list (terminal 'even)
                                   (terminal 'odd))
                             '()
@@ -69,8 +54,7 @@
                                           'high-level))
                               '()
                               ))
-        (('high-level) (multinomial (list '(concat) '(conditional))
-                                    (list (/ 1 1)    0)))
+        (('high-level) (from depth (list '(concat)) (list '(conditional))))
         (else 'error)
         ))
 

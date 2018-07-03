@@ -10,7 +10,7 @@
       (pair start-symbol 
             (map (lambda (symbol) (inner-tree-unfold transition symbol (- depth 1))) (transition start-symbol depth)))))
 
-(define MAX-DEPTH 10)
+(define MAX-DEPTH 3)
 
 (define (tree-unfold transition start-symbol)
   (inner-tree-unfold transition start-symbol MAX-DEPTH))
