@@ -1,4 +1,5 @@
 ; vim: ft=scheme
+
 (define (all-but-last xs)
   (cond ((null? xs) (error "all-but-last got empty list!"))
         ((null? (rest xs)) '())

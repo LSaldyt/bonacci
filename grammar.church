@@ -1,46 +1,60 @@
 ; vim: ft=scheme
 #include pcfg.church
 
-(define (transition nonterminal)
+(define (transition nonterminal depth)
   (case nonterminal
-        (('atom) (from (list (terminal 'x)
+        (('atom) (from depth (list (terminal 'x)
                              (terminal '1)
-                             (terminal '2))))
-        (('operator) (from (list (terminal '+)
-                                 (terminal '*))))
-        (('expression) (from (list '(atom)
-                                   '(operator expression expression))))
-        (('repeat) (from (list (list
+                             (terminal '2))
+                       '()
+                       ))
+        (('operator) (from depth (list (terminal '+)
+                                 (terminal '*))
+                           '()
+                           ))
+        (('expression) (from depth (list '(atom))
+                                   '((operator expression expression))))
+        (('repeat) (from depth (list (list
                                  (terminal- 'repeat)
                                  'expression
-                                 'expression))))
-        (('range) (from (list (list
+                                 'expression))
+                        '()
+                         ))
+        (('range) (from depth (list (list
                                  (terminal- 'range)
                                  'expression
-                                 'expression))))
-        (('list-literal) (from (list (list
+                                 'expression))
+                        '()
+                        ))
+        (('list-literal) (from depth (list (list
                                        (terminal- 'list)
-                                       'expression)
-                                     (list
+                                       'expression))
+                                     (list (list
                                        (terminal- 'append)
                                        'list-literal
                                        'list-literal))))
-        (('list-type) (from (list '(list-literal range repeat))))
-        (('concat) (from (list (list
+        (('list-type) (from depth (list '(list-literal range repeat))
+                            '()
+                            ))
+        (('concat) (from depth (list (list
                                  (terminal- 'append)
-                                 'list-type)
-                             (list
-                               (terminal- 'append)
-                               'list-type
-                               'concat))))
-        (('predicate) (from (list (terminal 'even)
-                                  (terminal 'odd))))
-        (('predicate-expr) (from (list '((predicate expression)))))
-        (('conditional) (from (list (list (terminal- 'if) 
+                                 'list-type))
+                               (list (list
+                                 (terminal- 'append)
+                                 'list-type
+                                 'concat))))
+        (('predicate) (from depth (list (terminal 'even)
+                                  (terminal 'odd))
+                            '()
+                            ))
+        (('predicate-expr) (from depth (list '((predicate expression)))))
+        (('conditional) (from depth (list (list (terminal- 'if) 
                                           'predicate
                                           'high-level
-                                          'high-level))))
-        (('high-level) (from (list '(conditional concat))))
+                                          'high-level))
+                              '()
+                              ))
+        (('high-level) (from depth (list '(concat)) (list '(conditional))))
         (else 'error)
         ))
 

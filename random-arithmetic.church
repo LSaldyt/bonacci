@@ -1,3 +1,5 @@
+; vim: ft=scheme
+
 (define (random-arithmetic-fn)
   (if (flip 0.3)
       (random-combination (random-arithmetic-fn) (random-arithmetic-fn))
@@ -19,7 +21,7 @@
    
    (define my-proc (random-arithmetic-fn))
    
-   (my-proc 2)
+   my-proc
    
    (= (my-proc 1) 3)))
 

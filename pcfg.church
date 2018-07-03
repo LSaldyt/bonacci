@@ -5,12 +5,10 @@
 (define (unwrap-terminal t) (second t))
 
 (define (inner-tree-unfold transition start-symbol depth)
-  (if (= depth 0)
-      'MAX-RECURSION-EXCEEDED-HERE
-      (if (terminal? start-symbol)
-          (unwrap-terminal start-symbol)   
-          (pair start-symbol 
-                (map (lambda (symbol) (inner-tree-unfold transition symbol (- depth 1))) (transition start-symbol))))))
+  (if (terminal? start-symbol)
+      (unwrap-terminal start-symbol)   
+      (pair start-symbol 
+            (map (lambda (symbol) (inner-tree-unfold transition symbol (- depth 1))) (transition start-symbol depth)))))
 
 (define MAX-DEPTH 10)
 
@@ -22,5 +20,10 @@
       (equal? (first symbol) 'terminal)
       false))
 
-(define (from l)
-  (multinomial l (map (lambda (s) (/ 1 (length l))) l)))
+(define (from depth terminals non-terminals)
+  "Builds an equally weighted multinomial distribution"
+  ;(if (= depth 0)
+      ;(multinomial (list (terminal 'END)) (list (/ 1 1)))
+  (let ((vals (if (= depth 0) terminals (append terminals non-terminals))))
+      (multinomial vals (map (lambda (s) (/ 1 (length vals))) vals))));)
+
