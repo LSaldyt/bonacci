@@ -40,8 +40,17 @@
                                      'predicate
                                      'high-level
                                      'high-level)))
-        (('high-level) (multinomial (list '(concat) '(conditional))
-                                    (list (/ 3 4)    (/ depth 4))))
+        (('high-level) (multinomial (list '(concat) '(atom)      '(conditional))
+                                    (list (/ 3 8)    (/ 3 8) (/ depth 4))))
         (else 'error)))
 
-(tree-unfold transition 'conditional 10)
+;(tree-unfold transition 'high-level 1)
+
+(define list-expression (mh-query 1 1
+  (define expr transition)
+  expr
+  (condition (and
+               (equal? expr '(atom 1))
+               ))
+  ))
+(histogram list-expression)

@@ -58,7 +58,7 @@
 
 ;(define (high-level-type) (uniform-draw (list (concat))));(concat) (list-type))))
 ;(define (high-level-type) (uniform-draw (list (concat) (list-type) (expression))));(concat) (list-type))))
-(define (high-level-type) (uniform-draw (list (expression) (conditional-body))));(concat) (list-type))))
+(define (high-level-type) (uniform-draw (list (expression)))); (conditional-body))));(concat) (list-type))))
 ;(define (high-level-type) (uniform-draw (list (list-type concat))));(concat) (list-type))))
 (define (f) (list 'lambda '(x) (high-level-type)))
 ;(define (f) (list 'lambda '(x) (expression)))
@@ -78,7 +78,8 @@
   ;(console-log over)
   ;(console-log (flatten (map func over)))
   (define created (flatten (map func over)))
-  (define l (list 0 1 0 1 0))
+  ;(define l (list 0 1 0 1 0))
+  (define l (list 3 6 10 15 21))
   (list test-f "over range 0 -" n)
   (condition (and
                (equal? created l)

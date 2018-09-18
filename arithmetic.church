@@ -3,7 +3,7 @@
 (define (random-arithmetic-expression)
   (if (flip 0.7)
       (if (flip) 'x (sample-integer 10))
-      (list (uniform-draw '(+ -)) (random-arithmetic-expression) (random-arithmetic-expression))))
+      (list (uniform-draw '(+ - * /)) (random-arithmetic-expression) (random-arithmetic-expression))))
 
 (define (procedure-from-expression expr)
   (eval (list 'lambda '(x) expr)))
@@ -11,11 +11,21 @@
 (define (sample)
 (rejection-query
  
- (define my-expr (random-arithmetic-expression))
- (define my-proc (procedure-from-expression my-expr))
+ (define e (random-arithmetic-expression))
+ (define f (procedure-from-expression e))
+ e
  
- my-expr
- 
- (= (my-proc 1) 3)))
-
+ ;(and (= (f 1) 2)
+ ;     (= (f 2) 4)
+ ;     (= (f 3) 6)
+ ;     (= (f 4) 8)
+ ;     (= (f 5) 10)
+ ;     ))
+ (and (= (f 1) 1)
+      (= (f 2) 2)
+      (= (f 3) 6)
+      (= (f 4) 24)
+      (= (f 5) 120)
+      ))
+)
 (apply display (repeat 20 sample))
